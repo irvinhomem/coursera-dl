@@ -14,6 +14,20 @@ from .credentials import get_credentials, CredentialsError, keyring
 from .utils import decode_input
 
 
+def class_name_arg_required(args):
+    """
+    Evaluates whether class_name arg is required.
+
+    @param args: Command-line arguments.
+    @type args: namedtuple
+    """
+    no_class_name_flags = ['list_courses', 'version']
+    return not any(
+        getattr(args, flag)
+        for flag in no_class_name_flags
+    )
+
+
 def parse_args(args=None):
     """
     Parse the arguments/options passed to the program on the command line.
@@ -27,7 +41,7 @@ def parse_args(args=None):
 
     group_basic.add_argument('class_names',
                              action='store',
-                             nargs='+',
+                             nargs='*',
                              help='name(s) of the class(es) (e.g. "ml-005")')
 
     group_basic.add_argument('-u',
@@ -44,13 +58,21 @@ def parse_args(args=None):
                              default=None,
                              help='coursera password')
 
-    group_basic.add_argument('--on-demand', # FIXME: remove this option
-                             dest='on_demand',
-                             action='store_true',
-                             default=False,
-                             help='[DEPRECATED] get on-demand videos. Do not use'
-                             ' this option, it is deprecated. The script will'
-                             ' try to detect course type automatically.')
+    group_basic.add_argument('--jobs',
+                             dest='jobs',
+                             action='store',
+                             default=1,
+                             type=int,
+                             help='number of parallel jobs to use for '
+                             'downloading resources. (Default: 1)')
+
+    group_basic.add_argument('--download-delay',
+                             dest='download_delay',
+                             action='store',
+                             default=60,
+                             type=int,
+                             help='number of seconds to wait before downloading '
+                             'next course. (Default: 60)')
 
     group_basic.add_argument('-b',  # FIXME: kill this one-letter option
                              '--preview',
@@ -75,6 +97,19 @@ def parse_args(args=None):
 
     # Selection of material to download
     group_material = parser.add_argument_group('Selection of material to download')
+
+    group_material.add_argument('--only-syllabus',
+                                dest='only_syllabus',
+                                action='store_true',
+                                default=False,
+                                help='download only syllabus, skip course content. '
+                                '(Default: False)')
+
+    group_material.add_argument('--download-quizzes',
+                                dest='download_quizzes',
+                                action='store_true',
+                                default=False,
+                                help='download quiz and exam questions. (Default: False)')
 
     group_material.add_argument('--about',  # FIXME: should be --about-course
                                 dest='about',
@@ -137,7 +172,7 @@ def parse_args(args=None):
                                 help='disable URL skipping, all URLs will be '
                                 'downloaded (default: False)')
 
-    # Selection of material to download
+    # Parameters related to external downloaders
     group_external_dl = parser.add_argument_group('External downloaders')
 
     group_external_dl.add_argument('--wget',
@@ -177,6 +212,13 @@ def parse_args(args=None):
                                    default='',
                                    help='additional arguments passed to the'
                                    ' downloader')
+
+    parser.add_argument('--list-courses',
+                        dest='list_courses',
+                        action='store_true',
+                        default=False,
+                        help='list course names (slugs) and quit. Listed '
+                        'course names can be put into program arguments')
 
     parser.add_argument('--resume',
                         dest='resume',
@@ -289,6 +331,12 @@ def parse_args(args=None):
                              default=False,
                              help='print lots of debug information')
 
+    group_debug.add_argument('--cache-syllabus',
+                             dest='cache_syllabus',
+                             action='store_true',
+                             default=False,
+                             help='cache course syllabus into a file')
+
     group_debug.add_argument('--version',
                              dest='version',
                              action='store_true',
@@ -315,6 +363,11 @@ def parse_args(args=None):
     else:
         logging.basicConfig(level=logging.INFO,
                             format='%(message)s')
+
+    if class_name_arg_required(args) and not args.class_names:
+        parser.print_usage()
+        logging.error('You must supply at least one class name')
+        sys.exit(1)
 
     # show version?
     if args.version:

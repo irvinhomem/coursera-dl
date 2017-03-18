@@ -1,6 +1,7 @@
 # Coursera Downloader
 
 [![Build Status](https://travis-ci.org/coursera-dl/coursera-dl.svg?branch=master)](https://travis-ci.org/coursera-dl/coursera-dl)
+[![Build status](https://ci.appveyor.com/api/projects/status/3hru0ycv5fbny5k8/branch/master?svg=true)](https://ci.appveyor.com/project/balta2ar/coursera-dl/branch/master)
 [![Coverage Status](https://coveralls.io/repos/coursera-dl/coursera-dl/badge.svg)](https://coveralls.io/r/coursera-dl/coursera-dl)
 [![Latest version on PyPI](https://img.shields.io/pypi/v/coursera-dl.svg)](https://pypi.python.org/pypi/coursera-dl)
 [![Downloads from PyPI](https://img.shields.io/pypi/dm/coursera-dl.svg)](https://pypi.python.org/pypi/coursera-dl)
@@ -14,6 +15,7 @@
     - [Alternative ways of installing missing dependencies](#alternative-ways-of-installing-missing-dependencies)
         - [Alternative installation method for Unix systems](#alternative-installation-method-for-unix-systems)
         - [Installing dependencies on your own](#installing-dependencies-on-your-own)
+    - [Windows](#windows)
     - [Create an account with Coursera](#create-an-account-with-coursera)
     - [Running the script](#running-the-script)
     - [Resuming downloads](#resuming-downloads)
@@ -166,7 +168,7 @@ following steps (create/adapt first the directory
     cd my-coursera
     source bin/activate
     git clone https://github.com/coursera-dl/coursera-dl
-    cd coursera
+    cd coursera-dl
     pip install -r requirements.txt
     ./coursera-dl ...
 
@@ -174,7 +176,7 @@ To further download new videos from your classes, simply perform:
 
     cd /directory/where/I/want/my/courses/my-coursera
     source bin/activate
-    cd coursera
+    cd coursera-dl
     ./coursera-dl ...
 
 We are working on streamlining this whole process so that it is as simple as
@@ -183,6 +185,9 @@ disabling SSLv3, we have to take a few extra steps.  In any case, it is
 *highly* recommended that you always install the latest version of the
 Python interpreter that you can.
 
+### ArchLinux
+
+AUR package: [coursera-dl](https://aur.archlinux.org/packages/coursera-dl/)
 
 ### Installing dependencies on your own
 
@@ -206,6 +211,26 @@ Once again, before filing bug reports, if you installed the dependencies on
 your own, please check that the versions of your modules are at least those
 listed in the `requirements.txt` file (and, `requirements-dev.txt` file, if
 applicable).
+
+## Windows
+
+`python -m pip install coursera-dl`
+
+Be sure that the Python install path is added to the PATH system environment variables. This can be found in Control Panel > System > Advanced System Settings > Environment Variables. 
+
+```
+Example:
+C:\Python35\Scripts\;C:\Python35\;
+```
+
+Or if you have restricted installation permissions and you've installed Python under AppData, add this to your PATH.
+
+```
+Example:
+C:\Users\<user>\AppData\Local\Programs\Python\Python35-32\Scripts;C:\Users\<user>\AppData\Local\Programs\Python\Python35-32;
+```
+
+Coursera-dl can now be run from commandline or powershell.
 
 ## Create an account with Coursera
 

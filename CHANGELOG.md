@@ -1,5 +1,47 @@
 # Change Log
 
+## 0.8.0 (2016-10-04)
+
+Features:
+  - Add `--download-delay` option that adds a specified delay in seconds
+    before downloading next course. This is useful when downloading many
+    courses at once. Default value is 60 seconds.
+  - Add `--only-syllabus` option which is when activated, allows to skip
+    download of the course content. Only syllabus is parsed.
+  - Add support for `reflect` and `mcqReflect` question types in quizzes.
+  - Courses that encountered an error while parsing syllabus will be listed
+    in the end of the program execution, after all courses have been
+    processed (hopefully, downloaded). This helps skip vast output and easily
+    see which courses need user's attention, e.g. enrollment, session
+    switching or just patience until the course start date.
+
+Bugfixes:
+  - Locked programming assignments in syllabus used to crash coursera-dl.
+    Now the script goes on parsing syllabus and skips locked assignments.
+  - Add missing import statement to playlist generation module
+
+## 0.7.0 (2016-07-28)
+
+Features:
+  - Added option `--list-courses` to list currently enrolled courses (#514)
+  - Added option `--jobs N` to download resources in N threads simultaneously (#553)
+  - Added option `--download-quizzes` to download contents of graded and
+    ungraded quizzes (#490)
+  - Added option `--cache-syllabus` to avoid downloading course syllabus on
+    every run (this option is rather for developers)
+
+Bugfixes:
+  - Locked lectures are also requested from server now, which allows to
+    download some programming assignments that were not downloaded before (#555)
+
+Deletions:
+  - Support for old-style courses has been removed (Coursera discontinued old courses:
+    http://coursera.tumblr.com/post/145882467032/courseras-transition-to-a-new-technology-platform)
+  - `--ignore-http-errors` option has been removed and the default behavior
+    has been adjusted to include this option
+  - Removed deprecated `--on-demand` option. Now OnDemand classes are downloaded
+    by default
+
 ## 0.6.1 (2016-06-20)
 
 Bugfixes:
